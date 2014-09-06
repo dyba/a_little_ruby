@@ -1,0 +1,2 @@
+module WhatsNew
+end
