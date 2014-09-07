@@ -57,7 +57,7 @@ class TestOhMy < MiniTest::Test
     assert_equal tree.height, 4
   end
 
-  def test_substitute_fruit
+  def test_occurence_of_fruit
     tree = Bud.new
     assert_equal tree.occurs(Lemon.new), 0
 
@@ -75,5 +75,15 @@ class TestOhMy < MiniTest::Test
                      Split.new(Flat.new(Pear.new, Bud.new),
                                Flat.new(Pear.new, Bud.new)))
     assert_equal tree.occurs(Pear.new), 4
+  end
+
+  def test_substitution_of_fruit
+    tree = Split.new(Split.new(Flat.new(Lemon.new, Bud.new),
+                               Flat.new(Lemon.new, Bud.new)),
+                     Split.new(Flat.new(Lemon.new, Bud.new),
+                               Flat.new(Lemon.new, Bud.new)))
+    new_tree = tree.substitute(Apple.new, Lemon.new)
+    assert_equal new_tree.occurs(Apple.new), 4
+    assert_equal new_tree.occurs(Lemon.new), 0
   end
 end

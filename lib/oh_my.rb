@@ -1,36 +1,30 @@
 require 'singleton'
 
 module OhMy
-  class Fruit
-  end
-
-  class Tree
-  end
-
-  module Equatable
+  module Fruitlike
     def == obj
       self.instance_of?(obj.class)
     end
   end
 
-  class Peach < Fruit
-    include Equatable
+  class Peach
+    include Fruitlike
   end
 
-  class Apple < Fruit
-    include Equatable
+  class Apple
+    include Fruitlike
   end
 
-  class Pear < Fruit
-    include Equatable
+  class Pear
+    include Fruitlike
   end
 
-  class Lemon < Fruit
-    include Equatable
+  class Lemon
+    include Fruitlike
   end
 
-  class Fig < Fruit
-    include Equatable
+  class Fig
+    include Fruitlike
   end
 
   class IsFlat
@@ -107,7 +101,7 @@ module OhMy
     end
 
     def for_flat(fruit, tree)
-      if @old_obj == fruit
+      if @old_fruit == fruit
         Flat.new(@new_fruit, tree.accept(self))
       else
         Flat.new(fruit, tree.accept(self))
@@ -167,7 +161,7 @@ module OhMy
     end
   end
 
-  class Bud < Tree
+  class Bud
     include Treelike
 
     def accept(ask)
@@ -175,7 +169,7 @@ module OhMy
     end
   end
 
-  class Flat < Tree
+  class Flat
     include Treelike
 
     def initialize(fruit, tree)
@@ -187,7 +181,7 @@ module OhMy
     end
   end
 
-  class Split < Tree
+  class Split
     include Treelike
 
     def initialize(left_tree, right_tree)
