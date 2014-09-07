@@ -5,19 +5,30 @@ module OhMy
   class Tree
   end
 
+  module Equatable
+    def == obj
+      self.instance_of?(obj.class)
+    end
+  end
+
   class Peach < Fruit
+    include Equatable
   end
 
   class Apple < Fruit
+    include Equatable
   end
 
   class Pear < Fruit
+    include Equatable
   end
 
   class Lemon < Fruit
+    include Equatable
   end
 
   class Fig < Fruit
+    include Equatable
   end
 
   class Bud < Tree
@@ -90,16 +101,47 @@ module OhMy
     end
   end
 
-  module Substitute
-    module_function
+  class Substitute
+    def initialize(new_fruit, old_fruit)
+      @new_fruit, @old_fruit = new_fruit, old_fruit
+    end
 
     def for_bud
+      Bud.new
     end
 
     def for_flat(fruit, tree)
+      if @old_obj == fruit
+        Flat.new(@new_fruit, tree.accept(self))
+      else
+        Flat.new(fruit, tree.accept(self))
+      end
     end
 
     def for_split(left_tree, right_tree)
+      Split.new(left_tree.accept(self), right_tree.accept(self))
+    end
+  end
+
+  class Occurs
+    def initialize(fruit)
+      @fruit = fruit
+    end
+
+    def for_bud
+      0
+    end
+
+    def for_flat(fruit, tree)
+      if @fruit == fruit
+        1 + tree.accept(self)
+      else
+        tree.accept(self)
+      end
+    end
+
+    def for_split(left_tree, right_tree)
+      left_tree.accept(self) + right_tree.accept(self)
     end
   end
 

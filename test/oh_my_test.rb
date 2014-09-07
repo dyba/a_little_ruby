@@ -42,5 +42,38 @@ class TestOhMy < MiniTest::Test
 
     tree = Split.new(Bud.new, Bud.new)
     assert_equal tree.accept(Height), 1
+
+    tree = Split.new(
+            Split.new(
+              Flat.new(
+                Pear.new,
+                Bud.new),
+              Split.new(
+                Bud.new,
+                Flat.new(
+                  Apple.new,
+                  Bud.new))),
+            Bud.new)
+    assert_equal tree.accept(Height), 4
+  end
+
+  def test_substitute_fruit
+    tree = Bud.new
+    assert_equal tree.accept(Occurs.new(Lemon.new)), 0
+
+    tree = Flat.new(Lemon.new, Bud.new)
+    assert_equal tree.accept(Occurs.new(Lemon.new)), 1
+
+    tree = Split.new(Flat.new(Apple.new, Bud.new),
+                     Flat.new(Lemon.new, Bud.new))
+    assert_equal tree.accept(Occurs.new(Fig.new)), 0
+    assert_equal tree.accept(Occurs.new(Apple.new)), 1
+    assert_equal tree.accept(Occurs.new(Lemon.new)), 1
+
+    tree = Split.new(Split.new(Flat.new(Pear.new, Bud.new),
+                               Flat.new(Pear.new, Bud.new)),
+                     Split.new(Flat.new(Pear.new, Bud.new),
+                               Flat.new(Pear.new, Bud.new)))
+    assert_equal tree.accept(Occurs.new(Pear.new)), 4
   end
 end
