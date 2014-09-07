@@ -1,3 +1,5 @@
+require 'singleton'
+
 module OhMy
   class Fruit
   end
@@ -31,14 +33,8 @@ module OhMy
     include Equatable
   end
 
-  class Bud < Tree
-    def accept(ask)
-      ask.for_bud
-    end
-  end
-
-  module IsFlat
-    module_function
+  class IsFlat
+    include Singleton
 
     def for_flat(fruit, tree)
       tree.accept(self)
@@ -53,8 +49,8 @@ module OhMy
     end
   end
 
-  module IsSplit
-    module_function
+  class IsSplit
+    include Singleton
 
     def for_flat(fruit, tree)
       false
@@ -69,8 +65,8 @@ module OhMy
     end
   end
 
-  module HasFruit
-    module_function
+  class HasFruit
+    include Singleton
 
     def for_bud
       false
@@ -85,8 +81,8 @@ module OhMy
     end
   end
 
-  module Height
-    module_function
+  class Height
+    include Singleton
 
     def for_bud
       0
@@ -145,7 +141,43 @@ module OhMy
     end
   end
 
+  module Treelike
+    def is_split?
+      accept(IsSplit.instance)
+    end
+
+    def has_fruit?
+      accept(HasFruit.instance)
+    end
+
+    def is_flat?
+      accept(IsFlat.instance)
+    end
+
+    def height
+      accept(Height.instance)
+    end
+
+    def substitute(old_fruit, new_fruit)
+      accept(Substitute.new(old_fruit, new_fruit))
+    end
+
+    def occurs(fruit)
+      accept(Occurs.new(fruit))
+    end
+  end
+
+  class Bud < Tree
+    include Treelike
+
+    def accept(ask)
+      ask.for_bud
+    end
+  end
+
   class Flat < Tree
+    include Treelike
+
     def initialize(fruit, tree)
       @fruit, @tree = fruit, tree
     end
@@ -156,6 +188,8 @@ module OhMy
   end
 
   class Split < Tree
+    include Treelike
+
     def initialize(left_tree, right_tree)
       @left_tree, @right_tree = left_tree, right_tree
     end

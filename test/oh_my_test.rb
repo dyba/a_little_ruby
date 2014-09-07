@@ -19,29 +19,29 @@ class TestOhMy < MiniTest::Test
 
   def test_tree_is_split
     tree = Split.new(Bud.new, Bud.new)
-    assert tree.accept(IsSplit)
+    assert tree.is_split?
 
     tree = Bud.new
-    assert tree.accept(IsSplit)
+    assert tree.is_split?
 
     tree = Flat.new(Pear.new, Bud.new)
-    refute tree.accept(IsSplit)
+    refute tree.is_split?
   end
 
   def test_tree_has_fruit
     tree = Bud.new
-    refute tree.accept(HasFruit)
+    refute tree.has_fruit?
 
     tree = Split.new(Bud.new, Flat.new(Lemon.new, Bud.new))
-    assert tree.accept(HasFruit)
+    assert tree.has_fruit?
   end
 
   def test_tree_height
     tree = Bud.new
-    assert_equal tree.accept(Height), 0
+    assert_equal tree.height, 0
 
     tree = Split.new(Bud.new, Bud.new)
-    assert_equal tree.accept(Height), 1
+    assert_equal tree.height, 1
 
     tree = Split.new(
             Split.new(
@@ -54,26 +54,26 @@ class TestOhMy < MiniTest::Test
                   Apple.new,
                   Bud.new))),
             Bud.new)
-    assert_equal tree.accept(Height), 4
+    assert_equal tree.height, 4
   end
 
   def test_substitute_fruit
     tree = Bud.new
-    assert_equal tree.accept(Occurs.new(Lemon.new)), 0
+    assert_equal tree.occurs(Lemon.new), 0
 
     tree = Flat.new(Lemon.new, Bud.new)
-    assert_equal tree.accept(Occurs.new(Lemon.new)), 1
+    assert_equal tree.occurs(Lemon.new), 1
 
     tree = Split.new(Flat.new(Apple.new, Bud.new),
                      Flat.new(Lemon.new, Bud.new))
-    assert_equal tree.accept(Occurs.new(Fig.new)), 0
-    assert_equal tree.accept(Occurs.new(Apple.new)), 1
-    assert_equal tree.accept(Occurs.new(Lemon.new)), 1
+    assert_equal tree.occurs(Fig.new), 0
+    assert_equal tree.occurs(Apple.new), 1
+    assert_equal tree.occurs(Lemon.new), 1
 
     tree = Split.new(Split.new(Flat.new(Pear.new, Bud.new),
                                Flat.new(Pear.new, Bud.new)),
                      Split.new(Flat.new(Pear.new, Bud.new),
                                Flat.new(Pear.new, Bud.new)))
-    assert_equal tree.accept(Occurs.new(Pear.new)), 4
+    assert_equal tree.occurs(Pear.new), 4
   end
 end
